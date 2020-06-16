@@ -1,28 +1,3 @@
-.container-fluid {
-    font-size: 14px;
-    background-color: rgb(9, 2, 34);
-    height: 60px;
-}
-
-.container-fluid a {
-    color: white;
-}
-
-.navf {
-    margin-top: 7px;
-}
-
-#in,
-#btnsec {
-    background-color: rgb(58, 52, 52);
-}
-
-#btnsec {
-    outline: none;
-    color: rgb(124, 119, 119);
-}
-
-
 /*订单列表*/
 
 .b-30 {
@@ -171,14 +146,6 @@
     width: 15%;
     text-align: center;
     height: 54px;
-}
-
-.navbar-default .navbar-nav>li>a {
-    color: white;
-}
-
-.navbar-default .navbar-nav>li>a:hover {
-    color: lightgreen;
 }
 
 .fixed {
