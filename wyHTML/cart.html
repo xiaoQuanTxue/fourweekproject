@@ -8,11 +8,14 @@
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
 
 
-    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/jquery-3.4.1.min.js" type="text/javascript"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/jquery.json.min.js" type="text/javascript"></script>
     <link rel="stylesheet" href="css/cart.css">
     <link rel="stylesheet" href="css/footer.css">
     <link rel="stylesheet" href="css/header.css">
+    <script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
 </head>
 
 <body>
@@ -26,7 +29,7 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="index.html">
                     <img alt="Brand" src="img/navbrand1.png" width="127" height="29" id="brand">
                 </a>
             </div>
@@ -64,11 +67,21 @@
 
                 </form>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">管理后台</a></li>
-                    <li><a href="#">我的学习</a></li>
+                    <li id="back-manage"><a href="#">管理后台</a></li>
+                    <li><a href="mystudy.html">我的学习</a></li>
                     <li><a href="#"><span class="glyphicon glyphicon glyphicon-bell" aria-hidden="true"></span></a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon glyphicon-shopping-cart" aria-hidden="true"></span></a></li>
-                    <li><a href="#">登录/注册</a></li>
+                    <li><a href="cart.html"><span class="glyphicon glyphicon glyphicon-shopping-cart" aria-hidden="true"></span></a></li>
+                    <li id="logging"><a href="login.html">登录/注册</a></li>
+                    <li>&nbsp;&nbsp;</li>
+
+
+                    <li class="aaa">
+
+                    </li>
+                    <li>&nbsp;&nbsp;</li>
+                    <li id="touxiang">
+
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -87,7 +100,7 @@
                 <div class="items">
                     <div class="items-title">
                         <div class="select">
-                            <input type="checkbox">
+                            <input type="checkbox" id="all-select">
                         </div>
                         <div class="img ">全选</div>
                         <div class="tname ">课程名称</div>
@@ -96,10 +109,10 @@
                     </div>
                 </div>
                 <div class="b-20"></div>
-                <div class="item">
+                <!-- <div class="item">
                     <div class="item-title">
                         <div class="select">
-                            <input type="checkbox">
+                            <input type="checkbox" name="in-select">
                         </div>
 
                         <div class="img">
@@ -109,10 +122,10 @@
                     <div class="courses">
                         <div class="course">
                             <div class="select">
-                                <input type="checkbox">
+                                <input type="checkbox" name="course-select" data-courseid="1">
                             </div>
                             <div class="img">
-                                <img src="img/course.webp">
+                                <img src="https://edu-image.nosdn.127.net/8ef49b986d8d45e395df3376eb5738d1.png?imageView&quality=100&crop=1_0_1078_607&thumbnail=450y250">
                             </div>
                             <div class="tname">
                                 <a href="">Tensorflow深度学习入门与实战</a>
@@ -120,26 +133,30 @@
                             <div class="time">永久有效</div>
                             <div class="price">567</div>
                             <div class="delete">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                <span class="glyphicon glyphicon-trash delbutn" aria-hidden="true"></span>
                             </div>
                         </div>
+
+
 
 
                     </div>
                     <div class="item-total">
                         <div class="total-contain">
-                            <span id="total-tip ">该机构小计:￥<span></span></span>
+                            <span class="total-tip ">该机构小计:￥<span class="total-tip-value">0</span></span>
                         </div>
                     </div>
-                </div>
+                    <div class="b-20"></div>
+                </div> -->
             </div>
             <div class="b-30"></div>
             <div class="end-box">
                 <div class="end-container">
-                    <a class="btn btn-default" id="totalbutn" role="butto" height="100%">去结算</a>
+                    <button class="btn btn-default" id="totalbutn" role="butto" height="100%">去结算</button>
                     <div class="end-left">
 
-                        <p>合计：<span id="totalprice">￥0.0</span></p>
+                        <p>合计：<span id="totalprice">￥<span class="totalprice-value">0</span></span>
+                        </p>
 
                         <p>(若购买享有优惠，相应金额将在订单结算页面减扣)</p>
                     </div>
@@ -176,6 +193,272 @@
             </div>
         </div>
     </footer>
+    <table style="font-size: 12px; width: 142px; display: none; " class="table" id="tab">
+        <tr>
+            <td><b>正在使用网易账号登录</b></td>
+        </tr>
+
+        <tr>
+            <td>
+                <a href="shezhi.html">设置</a>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <a href="order.html">我的订单</a>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <a id="zhuxiao">注销</a>
+            </td>
+        </tr>
+    </table>
+    <script src="js/navigation.js" type="text/javascript"></script>
+    <script>
+        var cartDl;
+        $.ajax({                
+            type:   "get",
+                            url:   "http://localhost:8080/cart/findCart",
+                            data:   "userid=" + sessionStorage.getItem("userid"),
+                            dataType:   "json",
+                            success:   function(msg)  {                   
+                if (msg.id != 404) {
+                    cartDl = msg.cartDetailsList;
+                    // console.log(cartDl[0]);
+                    console.log(cartDl);
+                    //将cartdl数组中的数据顺序重排
+                    for (var i = 0; i < cartDl.length; i++) {
+                        for (var j = 0; j < cartDl.length; j++) {
+                            if (cartDl[i].course.institutionid < cartDl[j].course.institutionid) {
+                                var t = cartDl[i];
+                                cartDl[i] = cartDl[j];
+                                cartDl[j] = t;
+                            }
+                        }
+                    }
+
+                    var two = new Array();
+                    // two[0] = cartDl[0];
+                    // alert(two[0]);
+                    var j = 0,
+                        k = 0;
+                    two[j] = new Array();
+                    if (cartDl.length > 1) {
+                        for (var i = 0; i < cartDl.length - 1; i++) {
+
+                            two[j][k++] = cartDl[i];
+
+                            if (cartDl.length > 1) {
+                                if (cartDl[i].course.institution.inname == cartDl[i + 1].course.institution.inname) {
+                                    continue;
+                                } else {
+
+                                    k = 0;
+                                    j++;
+                                    two[j] = new Array();
+                                }
+                            }
+
+                        }
+
+                        if (cartDl[cartDl.length - 1].course.institution.inname == cartDl[cartDl.length - 2].course.institution.inname) {
+                            two[j][k] = cartDl[cartDl.length - 1];
+                        } else {
+                            // two[j + 1] = new Array();
+                            two[j][0] = cartDl[cartDl.length - 1];
+                        }
+                    } else {
+                        two[j][0] = cartDl[0];
+                    }
+                    console.log(two);
+                    var v = '';
+                    // alert(v);
+                    var v2 = '</div><div class="item-total"><div class="total-contain"><span class="total-tip ">该机构小计:￥<span class="total-tip-value">0</span></span></div></div> </div><div class="b-20"></div>';
+                    for (var i = 0; i < two.length; i++) {
+                        var j = 0;
+                        var course = '';
+                        for (; j < two[i].length; j++) {
+                            course += '<div class="course"><div class="select"><input type="checkbox" name="course-select" data-courseid="' + two[i][j].courseid + '"></div><div class="img"><img src="' + two[i][j].course.viewsrc + '"></div><div class="tname"><a href="">' + two[i][j].course.coursename + '</a></div><div class="time">' + two[i][j].course.validtime + '</div><div class="price">' + two[i][j].course.courseprice + '</div><div class="delete"><span class="glyphicon glyphicon-trash delbutn" aria-hidden="true" data-cdid="' + two[i][j].id + '"></span></div></div>';
+                            // console.log(two[i][j]);
+                        }
+
+                        course = '<div class="item"> <div class="item-title"><div class="select"><input type="checkbox"  name="in-select"></div><div class="img"><span>机构 <span class="institution-name">' + two[i][j - 1].course.institution.inname + '</span></span></div></div><div class="courses">' + course + v2;
+                        v += course;
+
+                    }
+                    // alert(v);
+                    if (cartDl !== null || cartDl !== undefined) {
+                        $(".item-box").append(v);
+                    } else {
+                        $(".container-box").replaceWith('<div class="empty-content"><div class="lettle"><p class="upon">暂时还没有该状态的订单</p><p class="down">去<a>全部课程</a>页面学习喜欢的课程吧~</p></div></div>');
+                    }
+
+                    $("#nums").text($(".course").length);
+                    vadifySubmit();
+                } else {
+                    $(".container-box").replaceWith('<div class="empty-content"><div class="lettle"><p class="upon">好好学习，天天向上，看到喜欢的课程，点击【加入购物车】，在这里合并购买</p></div></div>');
+
+                }
+
+
+            }                            
+        })
+
+
+        //全选
+        $("#all-select").click(function() {
+
+                var state = this.checked;
+
+                $("input[type='checkbox']").prop("checked", state);
+                add($(".course"));
+
+            })
+            //机构全选
+        $(document).on("click", "input[name='in-select']", function() {
+                var state = this.checked;
+
+                $(this).parent().parent().next().find("input").prop("checked", state);
+                vadifyIn();
+                add(this);
+            })
+            //course选择
+
+        $(document).on("click", "input[name='course-select']", function() {
+            var num = $(this).parents(".courses").find("input:checked").length;
+            // alert(num);
+            if (num === $(this).parents(".courses").find("input").length) {
+                $(this).parents(".item").find("input[name='in-select']").prop("checked", true);
+
+
+            } else {
+                $(this).parents(".item").find("input[name='in-select']").prop("checked", false);
+
+            }
+            vadifyIn();
+            add(this);
+        })
+
+        //删除
+        $(document).on("click", ".delbutn", function() {
+            var o = this;
+            if ($(this).parents(".courses").children(".course").length == 1) {
+                $(this).parents(".item").remove();
+            } else {
+                $(this).parents(".course").remove();
+            }
+            add(this);
+            $.ajax({
+                url: "http://localhost:8080/cart/delcartd",
+                data: "cdid=" + parseInt($(o).attr("data-cdid")),
+                dataType: "text",
+                success: function(o) {
+                    alert(o);
+
+                }
+            })
+        })
+
+
+        //submit
+
+        $(document).on("click", "#totalbutn", function() {
+            var a = $("input[name='course-select']:checked");
+            console.log(a.attr("data-courseid"));
+
+            var c = new Array();
+            for (var i = 0; i < a.length; i++) {
+                var object = {
+                    id: null,
+                    userid: sessionStorage.getItem("userid"),
+                    courseid: 1
+                }
+                object.courseid = parseInt(a[i].getAttribute("data-courseid"));
+                c[i] = object;
+                console.log(JSON.stringify(c[i]));
+            }
+            alert(c);
+
+            console.log(JSON.stringify(c));
+
+            $.ajax({
+                url: "http://localhost:8080/preorder/add",
+                type: "post",
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify(c),
+                success: function(msg) {
+                    window.location.href = "/preorder.html"
+                }
+            })
+
+            // $.ajax({
+            //     url:"http://localhost:8080/cart/delcartd"
+            // })
+
+        })
+
+
+        //检查每个机构的状态
+        function vadifyIn() {
+            var selects = $("input[name='in-select']");
+            var flag = true;
+            for (var i = 0; i < selects.length; i++) {
+                if (!selects[i].checked) {
+                    flag = false;
+                    break;
+                }
+            }
+
+            $("#all-select").prop("checked", flag);
+
+        }
+
+        function vadifySubmit() {
+            if ($(".total-price").text() == '0') {
+                $("#totalbutn").prop("disabled", disabled);
+            }
+        }
+
+
+
+
+        function add(o) {
+            var s = $(o).parents(".item").children(".courses").find("input");
+            var total = 0;
+            for (var i = 0; i < s.length; i++) {
+                // console.log(parseInt(s.parents(".course").find(".price")[i].innerText));
+                if (s[i].checked) {
+                    total += parseInt(s.parents(".course").find(".price")[i].innerText);
+                }
+            }
+            var l = s.parents(".item").find(".total-tip-value");
+            l.text(total);
+
+            // $.each(l, function(index, item) {
+            //     alert(item.innerText);
+            // })
+
+
+            totalAdd();
+        }
+
+        function totalAdd() {
+            var s = $(".total-tip-value");
+            var t = 0;
+            for (var i = 0; i < s.length; i++) {
+                // alert(s[i].innerText);
+                t += parseInt(s[i].innerText);
+            }
+            $(".totalprice-value").text(t);
+        }
+
+
+
+        //重新定义排序规则
+    </script>
 </body>
 
 </html>
